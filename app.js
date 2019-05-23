@@ -14,17 +14,20 @@ const server = http.createServer((req, res) => {
     res.write("</html>");
     return res.end();
   }
+
   if (url === "/message" && method === "POST") {
     const body = [];
+    //loading chunks into the body array.
     req.on("data", chunk => {
       console.log(chunk);
       body.push(chunk);
     });
+    //Once we finish loading all our chunks we parse the data.
     req.on("end", () => {
-        const parsedBody = Buffer.concat(body).toString();
-        console.log(parsedBody);
-        const message = parsedBody.split('=')[1];
-        fs.writeFileSync("message.txt", message);
+      const parsedBody = Buffer.concat(body).toString();
+      console.log(parsedBody);
+      const message = parsedBody.split("=")[1];
+      fs.writeFileSync("message.txt", message); //We write the data into the file
     });
     res.statusCode = 302;
     res.setHeader("Location", "/");
