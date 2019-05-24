@@ -19,22 +19,25 @@ const server = http.createServer((req, res) => {
     const body = [];
     //loading chunks into the body array.
     req.on("data", chunk => {
-      console.log(chunk);
       body.push(chunk);
     });
     //Once we finish loading all our chunks we parse the data.
-    req.on("end", () => {
+    return req.on("end", () => {
       const parsedBody = Buffer.concat(body).toString();
-      console.log(parsedBody);
       const message = parsedBody.split("=")[1];
-      fs.writeFileSync("message.txt", message); //We write the data into the file
+      fs.writeFile("message.txt", message, (err) => {
+        res.statusCode = 302;
+        res.setHeader("Location", "/");
+        return res.end();
+      }); //We write the data into the file
     });
-    res.statusCode = 302;
-    res.setHeader("Location", "/");
-    return res.end();
-  }
 
+  }
   res.setHeader("Content-Type", "text/html");
+  res.write("<html>");
+  res.write("<head><title>My Firtst Page</title></head>");
+  res.write("<body><h1>Hello from my NodeJS server</h1></body>");
+  res.write("</html>");
 });
 
 //Listen on port 3000
