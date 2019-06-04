@@ -8,7 +8,7 @@ const router = express.Router(); //kinda like a mini express app
 const products = [];
 
 router.get("/add-product", (req, res, next) => {
-  res.render("add-product.pug");
+  res.render('add-product', {docTitle: "Add Product", path: "/admin/add-product"});
 });
 
 router.post("/add-product", (req, res, next) => {
